@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibecode Markets</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    :root {
+      --radius-lg: 24px;
+      --radius-xl: 30px;
+    }
+
+    :root[data-theme="dark"] {
+      --bg: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 60%, #000 100%);
+      --card-bg: #050816;
+      --text-main: #f9fafb;
+      --text-sub: #a1a1aa;
+      --border-subtle: #27272f;
+      --chip-bg: #111827;
+      --grid-line: rgba(63, 63, 70, 0.35);
+      --shadow-soft: 0 22px 55px rgba(0, 0, 0, 0.85);
+    }
+
+    :root[data-theme="light"] {
+      --bg: radial-gradient(circle at top, #e5f0ff 0, #f4f4f5 40%, #f4f4f5 100%);
+      --card-bg: #ffffff;
+      --text-main: #18181b;
+      --text-sub: #4b5563;
+      --border-subtle: #e5e7eb;
+      --chip-bg: #f4f4f5;
+      --grid-line: rgba(209, 213, 219, 0.9);
+      --shadow-soft: 0 18px 42px rgba(15, 23, 42, 0.18);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .app-shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 18px 14px 32px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    .logo-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(16px);
+    }
+
+    :root[data-theme="light"] .logo-pill {
+      background: rgba(255, 255, 255, 0.88);
+      border-color: rgba(148, 163, 184, 0.5);
+    }
+
+    .logo-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: conic-gradient(from 120deg, #22c55e, #22d3ee, #f97316, #22c55e);
+      box-shadow: 0 0 10px rgba(45, 212, 191, 0.8);
+    }
+
+    .theme-toggle {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--chip-bg);
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .theme-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #facc15, #f97316);
+      box-shadow: 0 0 10px rgba(248, 250, 252, 0.6);
+    }
+
+    .hero-block { padding: 12px 4px 0; }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(96, 165, 250, 0.8);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      margin-bottom: 8px;
+      backdrop-filter: blur(20px);
+    }
+
+    :root[data-theme="light"] .hero-pill {
+      background: rgba(255, 255, 255, 0.96);
+      color: #020617;
+    }
+
+    .hero-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .hero-title {
+      font-size: 1.8rem;
+      line-height: 1.2;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-gradient-word {
+      background: linear-gradient(135deg, #22c55e, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      max-width: 90%;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+    }
+
+    .chip-dot.stock   { background: #38bdf8; }
+    .chip-dot.crypto  { background: #8b5cf6; }
+    .chip-dot.forex   { background: #22c55e; }
+
+    .section-block { margin-top: 16px; }
+
+    .section-title {
+      font-size: 0.9rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+
+    .card-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .card {
+      position: relative;
+      padding: 14px 16px 16px;
+      border-radius: var(--radius-xl);
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0.9;
+      mix-blend-mode: screen;
+    }
+
+    .card--orange {
+      border-color: rgba(249, 115, 22, 0.85);
+      box-shadow: 0 22px 60px rgba(249, 115, 22, 0.22);
+      background:
+        radial-gradient(circle at top left, rgba(249, 115, 22, 0.26), transparent 55%),
+        var(--card-bg);
+    }
+    .card--orange::before {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), transparent 55%);
+    }
+
+    .card--pink {
+      border-color: rgba(244, 114, 182, 0.9);
+      box-shadow: 0 22px 60px rgba(244, 114, 182, 0.26);
+      background:
+        radial-gradient(circle at top right, rgba(244, 114, 182, 0.25), transparent 55%),
+        var(--card-bg);
+    }
+    .card--pink::before {
+      background: linear-gradient(135deg, rgba(244, 114, 182, 0.26), transparent 55%);
+    }
+
+    .card--green {
+      border-color: rgba(74, 222, 128, 0.9);
+      box-shadow: 0 22px 60px rgba(34, 197, 94, 0.22);
+      background:
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.25), transparent 55%),
+        var(--card-bg);
+    }
+    .card--green::before {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.24), transparent 55%);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .country-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      margin-bottom: 3px;
+    }
+
+    .card-title {
+      font-size: 1.02rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .card-sub {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      max-width: 90%;
+    }
+
+    .card-icon-pill {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      box-shadow: 0 0 12px rgba(148, 163, 184, 0.7);
+    }
+
+    :root[data-theme="light"] .card-icon-pill {
+      background: #ffffff;
+    }
+
+    .metric-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 0.75rem;
+    }
+
+    .metric {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(14px);
+    }
+
+    :root[data-theme="light"] .metric {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.65);
+    }
+
+    .metric-label { color: var(--text-sub); }
+
+    .metric-value { font-weight: 600; }
+
+    .metric-value.pos {
+      color: #22c55e;
+      text-shadow: 0 0 12px rgba(34, 197, 94, 0.55);
+    }
+
+    .metric-value.neg {
+      color: #ef4444;
+      text-shadow: 0 0 12px rgba(248, 113, 113, 0.6);
+    }
+
+    .dca-note {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: var(--text-sub);
+    }
+
+    .dca-note span {
+      font-weight: 600;
+      color: #a3e635;
+    }
+
+    footer {
+      padding: 10px 14px 18px;
+      font-size: 0.7rem;
+      color: var(--text-sub);
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .app-shell { padding: 26px 20px 40px; }
+      .hero-title { font-size: 2.3rem; }
+      .hero-sub { max-width: 60%; }
+      .card-grid { gap: 14px; }
+      .card { padding: 18px 20px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="logo-pill">
+        <span class="logo-dot"></span>
+        <span class="logo-text">VIBECODE MARKETS</span>
+      </div>
+      <button id="themeToggle" class="theme-toggle">
+        <span class="theme-dot"></span>
+        <span>Dark / Light</span>
+      </button>
+    </header>
+
+    <section class="hero-block">
+      <div class="hero-pill">
+        <span class="hero-badge-dot"></span>
+        LIVE GLOBAL DATA
+      </div>
+
+      <h1 class="hero-title">
+        One screen for
+        <span class="hero-gradient-word">stocks crypto forex</span>
+        across the world
+      </h1>
+
+      <p class="hero-sub">
+        Clean view of major indices top coins and FX majors with simple DCA hints and market sentiment in one place
+      </p>
+
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-dot stock"></span> World indices
+        </div>
+        <div class="chip">
+          <span class="chip-dot crypto"></span> Crypto heat
+        </div>
+        <div class="chip">
+          <span class="chip-dot forex"></span> FX majors
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section class="section-block">
+        <h2 class="section-title">WORLD INDICES</h2>
+        <div id="stockGrid" class="card-grid"></div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-title">TOP CRYPTO</h2>
+        <div id="cryptoGrid" class="card-grid"></div>
+      </section>
+
+      <section class="section-block">
+        <h2 class="section-title">FX MAJORS</h2>
+        <div id="forexGrid" class="card-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    Design inspired layout — data for education only not investment advice
+  </footer>
+
+  <script>
+    // Theme toggle
+    const root = document.documentElement;
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") || "dark";
+      root.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    });
+
+    // Block copy
+    document.addEventListener("contextmenu", e => e.preventDefault());
+    document.addEventListener("copy", e => e.preventDefault());
+
+    const fmt = {
+      pct(n) {
+        if (n === null || n === undefined || isNaN(n)) return "N A";
+        const sign = n >= 0 ? "+" : "−";
+        return sign + Math.abs(n).toFixed(2) + "%";
+      },
+      rate(n) {
+        if (!n && n !== 0) return "N A";
+        return n.toFixed(4);
+      },
+      price(n) {
+        if (!n && n !== 0) return "N A";
+        if (n >= 1000) return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+        return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+      }
+    };
+
+    // ------------ CONFIG ------------
+    const ALPHA_KEY = "6FK7TY9HHJ5KF7TN";
+
+    const stockAssets = [
+      {
+        symbol: "SPY",
+        countryTag: "United States · Equities",
+        title: "S P 500 via SPY",
+        desc: "Broad US large cap market using S P 500 ETF",
+        badge: "US"
+      },
+      {
+        symbol: "INDA",
+        countryTag: "India · Equities",
+        title: "India large caps via INDA",
+        desc: "India exposure through MSCI India ETF in USD",
+        badge: "IN"
+      },
+      {
+        symbol: "EWJ",
+        countryTag: "Japan · Equities",
+        title: "Japan market via EWJ",
+        desc: "Major Japanese stocks through EWJ ETF",
+        badge: "JP"
+      },
+      {
+        symbol: "EWG",
+        countryTag: "Germany · Equities",
+        title: "Germany market via EWG",
+        desc: "Broad German market through EWG ETF",
+        badge: "DE"
+      },
+      {
+        symbol: "EWU",
+        countryTag: "United Kingdom · Equities",
+        title: "UK market via EWU",
+        desc: "United Kingdom exposure using EWU ETF",
+        badge: "UK"
+      }
+    ];
+
+    const cryptoAssets = [
+      { id: "bitcoin",  symbol: "BTC", name: "Bitcoin",  desc: "Flagship crypto tracking global risk mood" },
+      { id: "ethereum", symbol: "ETH", name: "Ethereum", desc: "Smart contract base layer for DeFi and apps" },
+      { id: "solana",   symbol: "SOL", name: "Solana",   desc: "High speed chain for trading and NFTs" },
+      { id: "binancecoin", symbol: "BNB", name: "BNB",   desc: "Exchange token used across BNB Chain" },
+      { id: "ripple",   symbol: "XRP", name: "XRP",      desc: "Cross border payment focused token" }
+    ];
+
+    const forexPairs = [
+      { base: "EUR", quote: "USD" },
+      { base: "GBP", quote: "USD" },
+      { base: "USD", quote: "JPY" },
+      { base: "AUD", quote: "USD" },
+      { base: "USD", quote: "INR" }
+    ];
+
+    // DOM maps
+    const stockDom = {};
+    const cryptoDom = {};
+    const forexDom = {};
+
+    function createStockCards() {
+      const grid = document.getElementById("stockGrid");
+      stockAssets.forEach((asset, i) => {
+        const card = document.createElement("article");
+        const colorClass = "card--orange";
+        card.className = "card " + colorClass;
+        card.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="country-tag">${asset.countryTag}</div>
+              <div class="card-title">${asset.title}</div>
+              <p class="card-sub">${asset.desc}</p>
+            </div>
+            <div class="card-icon-pill">${asset.badge}</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric">
+              <span class="metric-label">Price</span>
+              <span class="metric-value" data-role="price">Loading</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">24h</span>
+              <span class="metric-value" data-role="change">Loading</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Sentiment</span>
+              <span class="metric-value" data-role="sentiment">Loading</span>
+            </div>
+          </div>
+          <p class="dca-note" data-role="dca">
+            <span>DCA view</span> Waiting for data
+          </p>
+        `;
+        const dom = {
+          priceEl: card.querySelector('[data-role="price"]'),
+          changeEl: card.querySelector('[data-role="change"]'),
+          sentimentEl: card.querySelector('[data-role="sentiment"]'),
+          dcaEl: card.querySelector('[data-role="dca"]')
+        };
+        stockDom[asset.symbol] = dom;
+        grid.appendChild(card);
+      });
+    }
+
+    function createCryptoCards() {
+      const grid = document.getElementById("cryptoGrid");
+      cryptoAssets.forEach((asset, i) => {
+        const colorClass = "card--pink";
+        const card = document.createElement("article");
+        card.className = "card " + colorClass;
+        card.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="country-tag">Global · Crypto</div>
+              <div class="card-title">${asset.name} · ${asset.symbol}</div>
+              <p class="card-sub">${asset.desc}</p>
+            </div>
+            <div class="card-icon-pill">${asset.symbol}</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric">
+              <span class="metric-label">Price</span>
+              <span class="metric-value" data-role="price">Loading</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">24h</span>
+              <span class="metric-value" data-role="change">Loading</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Vol</span>
+              <span class="metric-value" data-role="vol">Analyzing</span>
+            </div>
+          </div>
+          <p class="dca-note" data-role="dca">
+            <span>DCA view</span> Pulling live data
+          </p>
+        `;
+        const dom = {
+          priceEl: card.querySelector('[data-role="price"]'),
+          changeEl: card.querySelector('[data-role="change"]'),
+          volEl: card.querySelector('[data-role="vol"]'),
+          dcaEl: card.querySelector('[data-role="dca"]')
+        };
+        cryptoDom[asset.id] = dom;
+        grid.appendChild(card);
+      });
+    }
+
+    function createForexCards() {
+      const grid = document.getElementById("forexGrid");
+      forexPairs.forEach((pair, i) => {
+        const colorClass = "card--green";
+        const code = pair.base + pair.quote;
+        const card = document.createElement("article");
+        card.className = "card " + colorClass;
+        card.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="country-tag">Forex · Majors</div>
+              <div class="card-title">${pair.base} / ${pair.quote}</div>
+              <p class="card-sub">
+                Major FX pair used as gauge for global risk mood
+              </p>
+            </div>
+            <div class="card-icon-pill">FX</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric">
+              <span class="metric-label">Rate</span>
+              <span class="metric-value" data-role="rate">Loading</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">24h</span>
+              <span class="metric-value" data-role="change">Loading</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Bias</span>
+              <span class="metric-value" data-role="bias">Loading</span>
+            </div>
+          </div>
+          <p class="dca-note" data-role="dca">
+            <span>DCA view</span> Using recent move to label bias for risk mood
+          </p>
+        `;
+        const dom = {
+          rateEl: card.querySelector('[data-role="rate"]'),
+          changeEl: card.querySelector('[data-role="change"]'),
+          biasEl: card.querySelector('[data-role="bias"]'),
+          dcaEl: card.querySelector('[data-role="dca"]')
+        };
+        forexDom[code] = dom;
+        grid.appendChild(card);
+      });
+    }
+
+    // ------------ STOCK DATA (Alpha Vantage) ------------
+    const stockCache = {};
+
+    function applyStockData(data, dom) {
+      const { price, changePct } = data;
+      dom.priceEl.textContent = price >= 1000 ? price.toFixed(0) : price.toFixed(2);
+      dom.changeEl.textContent = fmt.pct(changePct);
+      dom.changeEl.classList.remove("pos", "neg");
+      if (changePct > 0) dom.changeEl.classList.add("pos");
+      else if (changePct < 0) dom.changeEl.classList.add("neg");
+
+      let sentiment, msg;
+      const abs = Math.abs(changePct);
+      if (abs < 0.4) {
+        sentiment = "Neutral";
+        msg = "Day is flat so DCA plan can stay normal";
+      } else if (changePct >= 0.4 && changePct < 2) {
+        sentiment = "Bullish";
+        msg = "Market trending up so steady recurring buys work";
+      } else if (changePct >= 2) {
+        sentiment = "Hot";
+        msg = "Strong green so keep DCA smaller and avoid chasing";
+      } else if (changePct <= -0.4 && changePct > -2) {
+        sentiment = "Cautious";
+        msg = "Mild red so disciplined DCA is fine if view is long term";
+      } else {
+        sentiment = "Oversold";
+        msg = "Sharp drop so split buys across the next few sessions";
+      }
+      dom.sentimentEl.textContent = sentiment;
+      dom.dcaEl.innerHTML = "<span>DCA view</span> " + msg;
+    }
+
+    async function loadStocks() {
+      for (const asset of stockAssets) {
+        const dom = stockDom[asset.symbol];
+        if (!dom) continue;
+
+        dom.priceEl.textContent = "Loading";
+        dom.changeEl.textContent = "Loading";
+        dom.sentimentEl.textContent = "Loading";
+        dom.dcaEl.innerHTML = "<span>DCA view</span> Pulling live data";
+
+        const cached = stockCache[asset.symbol];
+        if (cached && Date.now() - cached.time < 60000) {
+          applyStockData(cached, dom);
+          continue;
+        }
+
+        try {
+          const url =
+            `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${encodeURIComponent(
+              asset.symbol
+            )}&apikey=${ALPHA_KEY}`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const json = await res.json();
+          const q = json["Global Quote"];
+          if (!q || !q["05. price"]) throw new Error("No data");
+
+          const price = parseFloat(q["05. price"]);
+          let changePct = parseFloat(q["10. change percent"] || "0");
+          if (Number.isNaN(changePct)) changePct = 0;
+          const data = { price, changePct, time: Date.now() };
+          stockCache[asset.symbol] = data;
+          applyStockData(data, dom);
+        } catch (e) {
+          dom.priceEl.textContent = "API error";
+          dom.changeEl.textContent = "N A";
+          dom.sentimentEl.textContent = "N A";
+          dom.dcaEl.innerHTML =
+            "<span>DCA view</span> Unable to load index data right now";
+        }
+
+        // Alpha Vantage free limit ko respect karne ke liye thoda delay
+        await new Promise(r => setTimeout(r, 1500));
+      }
+    }
+
+    // ------------ CRYPTO DATA (CoinGecko) ------------
+    async function loadCryptos() {
+      const ids = cryptoAssets.map(c => c.id).join(",");
+      const url =
+        `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+
+        cryptoAssets.forEach(asset => {
+          const dom = cryptoDom[asset.id];
+          const coin = data[asset.id];
+          if (!dom || !coin) return;
+
+          const price = coin.usd;
+          const change = coin.usd_24h_change;
+          dom.priceEl.textContent = fmt.price(price);
+
+          const pct = Number(change.toFixed(2));
+          dom.changeEl.textContent = fmt.pct(pct);
+          dom.changeEl.classList.remove("pos", "neg");
+          if (pct > 0) dom.changeEl.classList.add("pos");
+          else if (pct < 0) dom.changeEl.classList.add("neg");
+
+          const abs = Math.abs(pct);
+          if (abs < 1) dom.volEl.textContent = "Calm";
+          else if (abs < 3) dom.volEl.textContent = "Active";
+          else dom.volEl.textContent = "High";
+
+          let msg;
+          if (pct <= -5) {
+            msg = "Heavy drop so spread buys over next few days not all at once";
+          } else if (pct < 0) {
+            msg = "Red day so regular weekly monthly buys make sense";
+          } else if (pct < 4) {
+            msg = "Green but not crazy so steady DCA is fine";
+          } else {
+            msg = "Strong pump so keep DCA smaller and wait for cool off";
+          }
+          dom.dcaEl.innerHTML = "<span>DCA view</span> " + msg;
+        });
+      } catch (e) {
+        cryptoAssets.forEach(asset => {
+          const dom = cryptoDom[asset.id];
+          if (!dom) return;
+          dom.priceEl.textContent = "API error";
+          dom.changeEl.textContent = "N A";
+          dom.volEl.textContent = "N A";
+          dom.dcaEl.innerHTML =
+            "<span>DCA view</span> Unable to load crypto data right now";
+        });
+      }
+    }
+
+    // ------------ FOREX DATA (exchangerate.host) ------------
+    function formatDate(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    async function loadOneForexPair(pair) {
+      const code = pair.base + pair.quote;
+      const dom = forexDom[code];
+      if (!dom) return;
+
+      dom.rateEl.textContent = "Loading";
+      dom.changeEl.textContent = "Loading";
+      dom.biasEl.textContent = "Loading";
+
+      try {
+        const today = new Date();
+        const endDate = formatDate(today);
+        const prev = new Date();
+        prev.setDate(prev.getDate() - 1);
+        const startDate = formatDate(prev);
+
+        const url =
+          `https://api.exchangerate.host/timeseries?start_date=${startDate}&end_date=${endDate}&base=${pair.base}&symbols=${pair.quote}`;
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+
+        const latest = data.rates[endDate]?.[pair.quote];
+        const prevRate = data.rates[startDate]?.[pair.quote] ?? latest;
+        if (!latest) throw new Error("No rate");
+
+        dom.rateEl.textContent = fmt.rate(latest);
+
+        const changePct = ((latest - prevRate) / prevRate) * 100;
+        const rounded = Number(changePct.toFixed(3));
+        dom.changeEl.textContent = fmt.pct(rounded);
+        dom.changeEl.classList.remove("pos", "neg");
+        if (rounded > 0) dom.changeEl.classList.add("pos");
+        else if (rounded < 0) dom.changeEl.classList.add("neg");
+
+        let bias, msg;
+        const abs = Math.abs(rounded);
+
+        if (abs < 0.15) {
+          bias = "Neutral";
+          msg = "Move is tiny so FX side is neutral and risk mood is balanced";
+        } else if (rounded > 0) {
+          bias = `${pair.base} strong`;
+          msg = "Base currency gaining so slight risk on tone";
+        } else {
+          bias = `${pair.quote} strong`;
+          msg = "Quote currency gaining so slight risk off tone";
+        }
+
+        dom.biasEl.textContent = bias;
+        dom.dcaEl.innerHTML = "<span>DCA view</span> " + msg;
+      } catch (e) {
+        dom.rateEl.textContent = "API error";
+        dom.changeEl.textContent = "N A";
+        dom.biasEl.textContent = "N A";
+        dom.dcaEl.innerHTML =
+          "<span>DCA view</span> Unable to load FX data right now";
+      }
+    }
+
+    async function loadForex() {
+      for (const pair of forexPairs) {
+        await loadOneForexPair(pair);
+      }
+    }
+
+    // ------------ INIT ------------
+    createStockCards();
+    createCryptoCards();
+    createForexCards();
+
+    loadStocks();          // stocks: 5 ETFs (3 min interval niche)
+    loadCryptos();         // top 5 coins
+    loadForex();           // 5 FX pairs
+
+    // Crypto + FX har 60 sec
+    setInterval(() => {
+      loadCryptos();
+      loadForex();
+    }, 60000);
+
+    // Stocks har 3 minute (Alpha Vantage limit ke chakkar me)
+    setInterval(() => {
+      loadStocks();
+    }, 180000);
+  </script>
+</body>
+</html>
