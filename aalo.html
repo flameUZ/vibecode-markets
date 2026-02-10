@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibecode Markets</title>
+  <style>
+    /* ------------ BASIC RESET + TEXT COPY BLOCK ------------ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ------------ THEME VARIABLES ------------ */
+    :root {
+      --radius-lg: 24px;
+      --radius-xl: 30px;
+    }
+
+    :root[data-theme="dark"] {
+      --bg: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 60%, #000 100%);
+      --bg-soft: #020617;
+      --card-bg: #050816;
+      --text-main: #f9fafb;
+      --text-sub: #a1a1aa;
+      --border-subtle: #27272f;
+      --chip-bg: #111827;
+      --grid-line: rgba(63, 63, 70, 0.35);
+      --shadow-soft: 0 22px 55px rgba(0, 0, 0, 0.85);
+    }
+
+    :root[data-theme="light"] {
+      --bg: radial-gradient(circle at top, #e5f0ff 0, #f4f4f5 40%, #f4f4f5 100%);
+      --bg-soft: #e5e5e5;
+      --card-bg: #ffffff;
+      --text-main: #18181b;
+      --text-sub: #4b5563;
+      --border-subtle: #e5e7eb;
+      --chip-bg: #f4f4f5;
+      --grid-line: rgba(209, 213, 219, 0.9);
+      --shadow-soft: 0 18px 42px rgba(15, 23, 42, 0.18);
+    }
+
+    /* ------------ BACKGROUND GRID ------------ */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* ------------ LAYOUT ------------ */
+    .app-shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 18px 14px 32px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    .logo-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(16px);
+    }
+
+    :root[data-theme="light"] .logo-pill {
+      background: rgba(255, 255, 255, 0.88);
+      border-color: rgba(148, 163, 184, 0.5);
+    }
+
+    .logo-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: conic-gradient(from 120deg, #22c55e, #22d3ee, #f97316, #22c55e);
+      box-shadow: 0 0 10px rgba(45, 212, 191, 0.8);
+    }
+
+    .theme-toggle {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: var(--chip-bg);
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .theme-toggle:active {
+      transform: scale(0.96);
+    }
+
+    .theme-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #facc15, #f97316);
+      box-shadow: 0 0 10px rgba(248, 250, 252, 0.6);
+    }
+
+    /* ------------ HERO ------------ */
+    .hero-block {
+      padding: 12px 4px 0;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(96, 165, 250, 0.8);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      margin-bottom: 8px;
+      backdrop-filter: blur(20px);
+    }
+
+    :root[data-theme="light"] .hero-pill {
+      background: rgba(255, 255, 255, 0.96);
+      color: #020617;
+    }
+
+    .hero-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .hero-title {
+      font-size: 1.8rem;
+      line-height: 1.2;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-gradient-word {
+      background: linear-gradient(135deg, #22c55e, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      max-width: 90%;
+    }
+
+    /* ------------ FILTER CHIPS ------------ */
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+    }
+
+    .chip-dot.stock   { background: #38bdf8; }
+    .chip-dot.crypto  { background: #8b5cf6; }
+    .chip-dot.forex   { background: #22c55e; }
+
+    /* ------------ REGION STRIP ------------ */
+    .region-strip {
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .region-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .region-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-sub);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    :root[data-theme="light"] .region-pill {
+      background: #ffffff;
+    }
+
+    .region-pill.active {
+      border-color: #22c55e;
+      color: #e5e7eb;
+      background: linear-gradient(135deg, #22c55e, #22c55e33);
+    }
+
+    :root[data-theme="light"] .region-pill.active {
+      color: #022c22;
+    }
+
+    /* ------------ CARDS ------------ */
+    .card-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .card {
+      position: relative;
+      padding: 14px 16px 16px;
+      border-radius: var(--radius-xl);
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      transform: translateY(0);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0.9;
+      mix-blend-mode: screen;
+    }
+
+    .card--orange {
+      border-color: rgba(249, 115, 22, 0.85);
+      box-shadow: 0 22px 60px rgba(249, 115, 22, 0.22);
+      background:
+        radial-gradient(circle at top left, rgba(249, 115, 22, 0.26), transparent 55%),
+        var(--card-bg);
+    }
+    .card--orange::before {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), transparent 55%);
+    }
+
+    .card--pink {
+      border-color: rgba(244, 114, 182, 0.9);
+      box-shadow: 0 22px 60px rgba(244, 114, 182, 0.26);
+      background:
+        radial-gradient(circle at top right, rgba(244, 114, 182, 0.25), transparent 55%),
+        var(--card-bg);
+    }
+    .card--pink::before {
+      background: linear-gradient(135deg, rgba(244, 114, 182, 0.26), transparent 55%);
+    }
+
+    .card--green {
+      border-color: rgba(74, 222, 128, 0.9);
+      box-shadow: 0 22px 60px rgba(34, 197, 94, 0.22);
+      background:
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.25), transparent 55%),
+        var(--card-bg);
+    }
+    .card--green::before {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.24), transparent 55%);
+    }
+
+    .card:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.45);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .country-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      margin-bottom: 3px;
+    }
+
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .card-sub {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      max-width: 90%;
+    }
+
+    .card-icon-pill {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      box-shadow: 0 0 12px rgba(148, 163, 184, 0.7);
+    }
+
+    :root[data-theme="light"] .card-icon-pill {
+      background: #ffffff;
+    }
+
+    .metric-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 0.75rem;
+    }
+
+    .metric {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(14px);
+    }
+
+    :root[data-theme="light"] .metric {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.65);
+    }
+
+    .metric-label {
+      color: var(--text-sub);
+    }
+
+    .metric-value {
+      font-weight: 600;
+    }
+
+    .metric-value.pos {
+      color: #22c55e;
+      text-shadow: 0 0 12px rgba(34, 197, 94, 0.55);
+    }
+
+    .metric-value.neg {
+      color: #ef4444;
+      text-shadow: 0 0 12px rgba(248, 113, 113, 0.6);
+    }
+
+    .dca-note {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: var(--text-sub);
+    }
+
+    .dca-note span {
+      font-weight: 600;
+      color: #a3e635;
+    }
+
+    /* ------------ FOOTER ------------ */
+    footer {
+      padding: 10px 14px 18px;
+      font-size: 0.7rem;
+      color: var(--text-sub);
+      text-align: center;
+    }
+
+    /* ------------ RESPONSIVE ------------ */
+    @media (min-width: 768px) {
+      .app-shell {
+        padding: 26px 20px 40px;
+      }
+
+      .hero-title {
+        font-size: 2.3rem;
+      }
+
+      .hero-sub {
+        max-width: 60%;
+      }
+
+      .card-grid {
+        gap: 18px;
+      }
+
+      .card {
+        padding: 18px 20px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="logo-pill">
+        <span class="logo-dot"></span>
+        <span class="logo-text">VIBECODE MARKETS</span>
+      </div>
+      <button id="themeToggle" class="theme-toggle">
+        <span class="theme-dot"></span>
+        <span>Dark / Light</span>
+      </button>
+    </header>
+
+    <section class="hero-block">
+      <div class="hero-pill">
+        <span class="hero-badge-dot"></span>
+        LIVE GLOBAL DATA
+      </div>
+
+      <h1 class="hero-title">
+        One screen for
+        <span class="hero-gradient-word">stocks crypto forex</span>
+        across the world
+      </h1>
+
+      <p class="hero-sub">
+        Clean view of major indices top coins and FX majors with simple DCA hints and market sentiment in one place
+      </p>
+
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-dot stock"></span> World indices
+        </div>
+        <div class="chip">
+          <span class="chip-dot crypto"></span> Crypto heat
+        </div>
+        <div class="chip">
+          <span class="chip-dot forex"></span> FX majors
+        </div>
+      </div>
+
+      <div class="region-strip">
+        <button class="region-pill active" data-region="us">United States</button>
+        <button class="region-pill" data-region="in">India</button>
+        <button class="region-pill" data-region="jp">Japan</button>
+        <button class="region-pill" data-region="de">Germany</button>
+        <button class="region-pill" data-region="uk">United Kingdom</button>
+        <button class="region-pill" data-region="cn">China</button>
+        <button class="region-pill" data-region="br">Brazil</button>
+        <button class="region-pill" data-region="ca">Canada</button>
+        <button class="region-pill" data-region="au">Australia</button>
+        <button class="region-pill" data-region="kr">South Korea</button>
+      </div>
+    </section>
+
+    <main class="card-grid">
+      <!-- INDEX CARD -->
+      <article class="card card--orange" id="indexCard">
+        <div class="card-header">
+          <div>
+            <div id="indexCountryTag" class="country-tag">United States · Equities</div>
+            <div id="indexTitle" class="card-title">S P 500 via SPY</div>
+            <p id="indexSub" class="card-sub">
+              Broad US large cap market using S P 500 ETF
+            </p>
+          </div>
+          <div id="indexBadge" class="card-icon-pill">US</div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric">
+            <span class="metric-label">Index</span>
+            <span id="indexPrice" class="metric-value">Loading</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">24h</span>
+            <span id="indexChange" class="metric-value">Loading</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Sentiment</span>
+            <span id="indexSentiment" class="metric-value">Loading</span>
+          </div>
+        </div>
+
+        <p id="indexDca" class="dca-note">
+          <span>DCA view</span> Waiting for data
+        </p>
+      </article>
+
+      <!-- BITCOIN CARD -->
+      <article class="card card--pink">
+        <div class="card-header">
+          <div>
+            <div class="country-tag">Global · Crypto</div>
+            <div class="card-title">Bitcoin · BTC</div>
+            <p class="card-sub">
+              Flagship crypto tracking global risk on mood
+            </p>
+          </div>
+          <div class="card-icon-pill">₿</div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric">
+            <span class="metric-label">Price</span>
+            <span id="btcPrice" class="metric-value">Loading</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">24h</span>
+            <span id="btcChange" class="metric-value">Loading</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Vol</span>
+            <span id="btcVolTag" class="metric-value">Analyzing</span>
+          </div>
+        </div>
+
+        <p id="btcDca" class="dca-note">
+          <span>DCA view</span> Pulling live data for simple DCA hint
+        </p>
+      </article>
+
+      <!-- EUR USD CARD -->
+      <article class="card card--green">
+        <div class="card-header">
+          <div>
+            <div class="country-tag">Forex · Majors</div>
+            <div class="card-title">EUR / USD</div>
+            <p class="card-sub">
+              Most traded pair reflecting euro versus dollar strength
+            </p>
+          </div>
+          <div class="card-icon-pill">FX</div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric">
+            <span class="metric-label">Rate</span>
+            <span id="eurusdRate" class="metric-value">Loading</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">24h</span>
+            <span id="eurusdChange" class="metric-value">Loading</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Bias</span>
+            <span id="eurusdBias" class="metric-value">Loading</span>
+          </div>
+        </div>
+
+        <p id="eurusdDca" class="dca-note">
+          <span>DCA view</span> Using recent move to label bias for risk mood
+        </p>
+      </article>
+    </main>
+  </div>
+
+  <footer>
+    Design inspired layout — data for education only not investment advice
+  </footer>
+
+  <script>
+    // THEME TOGGLE
+    const root = document.documentElement;
+    const toggleBtn = document.getElementById("themeToggle");
+
+    toggleBtn.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") || "dark";
+      root.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    });
+
+    // COPY / CONTEXT MENU BLOCK
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    document.addEventListener("copy", (e) => e.preventDefault());
+
+    // NUMBER FORMAT HELPERS
+    const fmt = {
+      price(n) {
+        if (n === null || n === undefined) return "N A";
+        if (n >= 1000) return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+        return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+      },
+      rate(n) {
+        if (n === null || n === undefined) return "N A";
+        return n.toFixed(4);
+      },
+      pct(n) {
+        if (n === null || n === undefined || isNaN(n)) return "N A";
+        const sign = n >= 0 ? "+" : "−";
+        return sign + Math.abs(n).toFixed(2) + "%";
+      }
+    };
+
+    // BITCOIN LIVE FROM COINGECKO
+    async function loadBitcoin() {
+      const priceEl = document.getElementById("btcPrice");
+      const changeEl = document.getElementById("btcChange");
+      const volEl = document.getElementById("btcVolTag");
+      const dcaEl = document.getElementById("btcDca");
+
+      try {
+        const res = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true"
+        );
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        const price = data.bitcoin.usd;
+        const change = data.bitcoin.usd_24h_change;
+
+        priceEl.textContent = fmt.price(price);
+
+        const changePct = Number(change.toFixed(2));
+        changeEl.textContent = fmt.pct(changePct);
+
+        changeEl.classList.remove("pos", "neg");
+        if (changePct > 0) changeEl.classList.add("pos");
+        else if (changePct < 0) changeEl.classList.add("neg");
+
+        const absChange = Math.abs(changePct);
+        if (absChange < 1) volEl.textContent = "Calm";
+        else if (absChange < 3) volEl.textContent = "Active";
+        else volEl.textContent = "High";
+
+        let msg;
+        if (changePct <= -3) {
+          msg = "Fast drop so split buys across next few days instead of all in";
+        } else if (changePct < 0) {
+          msg = "Mild red day so regular weekly or monthly buys make sense";
+        } else if (changePct < 3) {
+          msg = "Green but not overheated so steady DCA works";
+        } else {
+          msg = "Strong pump so go slow and keep DCA amounts smaller";
+        }
+        dcaEl.innerHTML = "<span>DCA view</span> " + msg;
+      } catch (err) {
+        priceEl.textContent = "API error";
+        changeEl.textContent = "N A";
+        volEl.textContent = "N A";
+        dcaEl.innerHTML =
+          "<span>DCA view</span> Unable to load live data right now";
+      }
+    }
+
+    // EURUSD LIVE FROM EXCHANGERATE.HOST
+    function formatDate(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    async function loadEurUsd() {
+      const rateEl = document.getElementById("eurusdRate");
+      const changeEl = docume
